@@ -49,3 +49,6 @@ Temporary Items
 
 # IntelliJ IDEA files
 .idea/
+
+# Target directory for test ran by Maven
+target/
