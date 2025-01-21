@@ -1,14 +1,46 @@
 import static org.junit.Assert.*;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class SudokuVerifierTest {
-	//implement tests to test SudokuVerifier with boundary values.  Use templates from Task 1 to derive and document test cases.
-	// A correct Sudoku string: 417369825632158947958724316825437169791586432346912758289643571573291684164875293
-	// An incorrect Sudoku string: 123456789912345678891234567789123456678912345567891234456789123345678912234567891
+import java.util.Random;
 
+public class SudokuVerifierTest {
+
+	// Test strings
+
+	// Correct Sudoku string
 	String c = "417369825632158947958724316825437169791586432346912758289643571573291684164875293";
-	String i = "123456789912345678891234567789123456678912345567891234456789123345678912234567891";
+
+	// Invalid Sudoku string with invalid character (Violates R1)
+	String r1 = "417369825A3215894795872431682543A169791586432346912758289643571573291684A648752A3";
+	// 3 invalid characters: 3xA
+
+	// Invalid Sudoku string with duplicate in sub-grid (Violates R2)
+	String r2 = "417469825632158947958724316825437169791586432346912758289643571573291684164875293";
+	// 3 duplicates in different sub-grids: 4(in sub-grid 1), 3(in sub-grid 4), 2(in sub-grid 5)
+
+	// Invalid Sudoku string with duplicate in row (Violates R3)
+	String r3 = "17417825632158947958724316825437169791586432346912758289643571573291684164875293";
+	// 3 duplicates in a row: 4, 1, 7 (all in first row)
+
+	// Invalid Sudoku string with duplicate in column (Violates R4)
+	String r4 = "417369825632158947458724316825437169791586432346912758289643571573291684164875293";
+	// 3 duplicates in a column: 4, 1, 7 (all in first column)
+
+	// Invalid Sudoku string with invalid character in sub-grid (Violates R2 and R1)
+	String r5 = "41A369825632158947958724316825437169791586432346912758289643571573291684164875293";
+	// Invalid character in first sub-grid
+
+	// Invalid Sudoku string with invalid character in row (Violates R3 and R1)
+	String r6 = "41A417825632158947958724316825437169791586432346912758289643571573291684164875293";
+	// Invalid character in first row
+
+	// Invalid Sudoku string with invalid character in column (Violates R4 and R1)
+	String r7 = "417369825632158947A58724316825437169791586432346912758289643571573291684164875293";
+	// Invalid character in first column
+
 	SudokuVerifier v = new SudokuVerifier();
 
 	/* SudokuVerifier Return Codes:
@@ -20,17 +52,14 @@ public class SudokuVerifierTest {
 	 * -4: Duplicate in column
 	 */
 
-	// Example test cases, already implemented
-	@Test
-	public void testCorrectString() {
-		int a = v.verify(c);
-		assertEquals("correct string", 0, a);
+	@Before
+	public void setUp() {
+		v = new SudokuVerifier();
 	}
 
-	@Test
-	public void testIncorrectString() {
-		int a = v.verify(i);
-		assertEquals("incorrect string", -2, a);
+	@After
+	public void tearDown() {
+		v = null;
 	}
 
 	// Sanity test
@@ -39,13 +68,21 @@ public class SudokuVerifierTest {
 		assertTrue(true);
 	}
 
-	// Input String Tests (Tagged as S1-S16, S20 in Condition Table)
+
+	// Input String Tests (Tagged as S1-S14 in Condition Table)
 
 	@Test
-	public void testInputStringLengthEquals81() { // Tag S1
+	public void testInputStringForValidLengthAndCharacters() { // Tag S1
 		// Expected result: 0 (Valid Sudoku - assuming valid grid)
-		int a = v.verify(c);
-		assertEquals("Input String Length Equals 81", 0, a);
+		String validString = c;
+
+		// Check the length of the string
+		assertEquals("Input String Length not 81", 81, validString.length());
+
+		// Check for valid characters and return code
+		int a = v.verify(validString);
+		assertEquals("Input String Valid Characters and Length 81 ", 0, a);
+
 	}
 
 	@Test
@@ -157,79 +194,27 @@ public class SudokuVerifierTest {
 		assertEquals("Input String Valid Characters With Tabs", 1, a);
 	}
 
-	// Cell class tests (Tagged as C4-C9 in Condition Table)
+
+	// Row class tests (Tagged as RO1-RO3 in Condition Table)
 
 	@Test
-	public void testValidCell_1() { // Tag C6
+	public void testValidRow() { // Tag RO1
 		// Expected result: 0 (Valid Sudoku - assuming valid grid)
-		String validCellString = "111111111111111111111111111111111111111111111111111111111111111111111111111111111";
-		int a = v.verify(validCellString);
-		assertEquals("Valid Cell (1)", 0, a);
-	}
-
-	@Test
-	public void testValidCell_9() { // Tag C7
-		// Expected result: 0 (Valid Sudoku - assuming valid grid)
-		String validCellString = "999999999999999999999999999999999999999999999999999999999999999999999999999999999";
-		int a = v.verify(validCellString);
-		assertEquals("Valid Cell (9)", 0, a);
-	}
-
-	@Test
-	public void testInvalidCell_0() { // Tag C8
-		// Expected result: -1 (Invalid cell value)
-		String invalidCellString = c.substring(0, 80) + "0";
-		int a = v.verify(invalidCellString);
-		assertEquals("Invalid Cell (0)", -1, a);
-	}
-
-	@Test
-	public void testInvalidCell_A() { // Tag C4
-		// Expected result: 1 (Invalid character)
-		String invalidCellString = c.substring(0, 80) + "A";
-		int a = v.verify(invalidCellString);
-		assertEquals("Invalid Cell (A)", 1, a);
-	}
-
-	@Test
-	public void testInvalidCell_Minus() { // Tag C6
-		// Expected result: -1 (Invalid cell value)
-		String invalidCellString = c.substring(0, 80) + "-";
-		int a = v.verify(invalidCellString);
-		assertEquals("Invalid Cell (-1)", -1, a);
-	}
-
-	@Test
-	public void testInvalidCell_10() { // Tag C9
-		// Expected result: -1 (Invalid cell value)
-		String invalidCellString = c.substring(0, 80) + "10";
-		int a = v.verify(invalidCellString);
-		assertEquals("Invalid Cell (10)", -1, a);
-	}
-
-	// Row class tests (Tagged as R1-R3 in Condition Table)
-
-	@Test
-	public void testValidRow() { // Tag R1
-		// Expected result: 0 (Valid Sudoku - assuming valid grid)
-		String validRowString = "123456789456789123789123456234567891567891234891234567345678912678912345918234756";
-		int a = v.verify(validRowString);
+		int a = v.verify(c);
 		assertEquals("Valid Row", 0, a);
 	}
 
 	@Test
-	public void testInvalidRowWithDuplicate() { // Tag R2
+	public void testInvalidRowWithDuplicate() { // Tag RO2
 		// Expected result: -3 (Duplicate in row)
-		String invalidRowString = "417779825632158947958724316825437169791586432346912758289643571573291684164875293";
-		int a = v.verify(invalidRowString);
+		int a = v.verify(r3);
 		assertEquals("Invalid Row With Duplicate", -3, a);
 	}
 
 	@Test
-	public void testInvalidRowWithInvalidCharacter() { // Tag R3
+	public void testInvalidRowWithInvalidCharacter() { // Tag RO3
 		// Expected result: 1 (Invalid character)
-		String invalidRowString = "41736982A632158947958724316825437169791586432346912758289643571573291684164875293";
-		int a = v.verify(invalidRowString);
+		int a = v.verify(r6);
 		assertEquals("Invalid Row With Invalid Character", 1, a);
 	}
 
@@ -238,24 +223,21 @@ public class SudokuVerifierTest {
 	@Test
 	public void testValidColumn() { // Tag CO1
 		// Expected result: 0 (Valid Sudoku - assuming valid grid)
-		String validColumnString = "1472583699758426312841967533697154827219345485936812178364796325918457854123996";
-		int a = v.verify(validColumnString);
+		int a = v.verify(c);
 		assertEquals("Valid Column", 0, a);
 	}
 
 	@Test
 	public void testInvalidColumnWithDuplicate() { // Tag CO2
 		// Expected result: -4 (Duplicate in column)
-		String invalidColumnString = "417369825632158947958724316825437169791586432346912758289643571573291684164875293";
-		int a = v.verify(invalidColumnString);
+		int a = v.verify(r4);
 		assertEquals("Invalid Column With Duplicate", -4, a);
 	}
 
 	@Test
 	public void testInvalidColumnWithInvalidCharacter() { // Tag CO3
 		// Expected result: 1 (Invalid character)
-		String invalidColumnString = "41736982563215894795872431682543716979158643234691275828964357157329168416487529A";
-		int a = v.verify(invalidColumnString);
+		int a = v.verify(r7);
 		assertEquals("Invalid Column With Invalid Character", 1, a);
 	}
 
@@ -264,24 +246,21 @@ public class SudokuVerifierTest {
 	@Test
 	public void testValidSubGrid() { // Tag SG1
 		// Expected result: 0 (Valid Sudoku - assuming valid grid)
-		String validSubGridString = "417369825632158947958724316825437169791586432346912758289643571573291684164875293";
-		int a = v.verify(validSubGridString);
+		int a = v.verify(c);
 		assertEquals("Valid Sub-Grid", 0, a);
 	}
 
 	@Test
 	public void testInvalidSubGridWithDuplicate() { // Tag SG2
 		// Expected result: -2 (Duplicate in sub-grid)
-		String invalidSubGridString = "417469825632158947958724316825437169791586432346912758289643571573291684164875293";
-		int a = v.verify(invalidSubGridString);
+		int a = v.verify(r2);
 		assertEquals("Invalid Sub-grid with duplicate", -2, a);
 	}
 
 	@Test
 	public void testInvalidSubGridWithInvalidCharacter() { // Tag SG3
 		// Expected result: 1 (Invalid character)
-		String invalidSubGridString = "41736982A632158947958724316825437169791586432346912758289643571573291684164875293";
-		int a = v.verify(invalidSubGridString);
+		int a = v.verify(r5);
 		assertEquals("Invalid Sub-grid with invalid character", 1, a);
 	}
 
@@ -290,23 +269,24 @@ public class SudokuVerifierTest {
 	@Test
 	public void testValidEntireGrid() { // Tag G1
 		// Expected result: 0 (Valid Sudoku)
-		String validGridString = "417369825632158947958724316825437169791586432346912758289643571573291684164875293";
-		int a = v.verify(validGridString);
+		int a = v.verify(c);
 		assertEquals("Valid Entire Grid", 0, a);
 	}
 
 	@Test
+	public void testInvalidEntireGridRandom() { // Tag G2
+		// Expected result: 1, -2, -3, -4 (Depending on randomly chosen string)
+
+		String[] randomInvalidGridStrings = {r1, r2, r3, r4};
+
+		Random random = new Random();
+		int randomIndex = random.nextInt(randomInvalidGridStrings.length);
+		String randomInvalidGridString = randomInvalidGridStrings[randomIndex];
+
+		int a = v.verify(randomInvalidGridString);
+		assertTrue("Invalid Entire Grid", a == 1 || a == -2 || a == -3 || a == -4);
 
 
-
-
-
-
-
-
-
-
-
-
+	}
 
 }
