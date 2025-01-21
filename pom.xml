@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://www.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
+    <groupId>SudokuChecker</groupId>
     <artifactId>SudokuChecker</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -42,11 +42,12 @@
                 <version>1.17.2</version>
                 <configuration>
                     <targetClasses>
-                        <param>com.example.*</param>
+                        <param>*</param>
                     </targetClasses>
                     <targetTests>
-                        <param>com.example.*</param>
+                        <param>*</param>
                     </targetTests>
+                    <verbose>true</verbose>
                 </configuration>
             </plugin>
         </plugins>

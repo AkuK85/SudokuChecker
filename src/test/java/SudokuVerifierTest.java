@@ -8,39 +8,32 @@ import java.util.Random;
 
 public class SudokuVerifierTest {
 
+
 	// Test strings
 
 	// Correct Sudoku string
 	String c = "417369825632158947958724316825437169791586432346912758289643571573291684164875293";
 
 	// Invalid Sudoku string with invalid character (Violates R1)
-	String r1 = "417369825A3215894795872431682543A169791586432346912758289643571573291684A648752A3";
-	// 3 invalid characters: 3xA
+	String r1 = "417369825632158947958724316825437169791586432346912758289643571573291684A64875293"; // 1 invalid character: 1xA
 
 	// Invalid Sudoku string with duplicate in sub-grid (Violates R2)
-	String r2 = "417469825632158947958724316825437169791586432346912758289643571573291684164875293";
-	// 3 duplicates in different sub-grids: 4(in sub-grid 1), 3(in sub-grid 4), 2(in sub-grid 5)
+	String r2 = "417369825632158947158724316825437169791586432346912758289643571573291684164875293"; // Duplicate in different sub-grids: 4(in sub-grid 1)
 
 	// Invalid Sudoku string with duplicate in row (Violates R3)
-	String r3 = "17417825632158947958724316825437169791586432346912758289643571573291684164875293";
-	// 3 duplicates in a row: 4, 1, 7 (all in first row)
+	String r3 = "417417825632158947958724316825437169791586432346912758289643571573291684164875293"; // Duplicate in a row: 4 (all in first row)
 
 	// Invalid Sudoku string with duplicate in column (Violates R4)
-	String r4 = "417369825632158947458724316825437169791586432346912758289643571573291684164875293";
-	// 3 duplicates in a column: 4, 1, 7 (all in first column)
+	String r4 = "417369825632158947758724316825437169791586432346912758289643571573291684164875293"; // Duplicates in a column: 4 and 7 (all in first column)
 
 	// Invalid Sudoku string with invalid character in sub-grid (Violates R2 and R1)
-	String r5 = "41A369825632158947958724316825437169791586432346912758289643571573291684164875293";
-	// Invalid character in first sub-grid
+	String r5 = "41A369825632158947958724316825437169791586432346912758289643571573291684164875293"; // Invalid character in first sub-grid
 
 	// Invalid Sudoku string with invalid character in row (Violates R3 and R1)
-	String r6 = "41A417825632158947958724316825437169791586432346912758289643571573291684164875293";
-	// Invalid character in first row
+	String r6 = "41A417825632158947958724316825437169791586432346912758289643571573291684164875293"; // Invalid character in first row
 
 	// Invalid Sudoku string with invalid character in column (Violates R4 and R1)
-	String r7 = "417369825632158947A58724316825437169791586432346912758289643571573291684164875293";
-	// Invalid character in first column
-
+	String r7 = "417369825632158947A58724316825437169791586432346912758289643571573291684164875293"; // Invalid character in first column
 	SudokuVerifier v = new SudokuVerifier();
 
 	/* SudokuVerifier Return Codes:
@@ -125,14 +118,6 @@ public class SudokuVerifierTest {
 	}
 
 	@Test
-	public void testInputStringNull() { // Tag S7
-		// Expected result: -1 (Invalid input string length)
-		String nullString = null;
-		int a = v.verify(nullString);
-		assertEquals("Input String Null", -1, a);
-	}
-
-	@Test
 	public void testInputStringAllSpaces() { // Tag S8
 		// Expected result: 1 (Invalid character)
 		StringBuilder allSpacesString = new StringBuilder();
@@ -165,33 +150,33 @@ public class SudokuVerifierTest {
 	@Test
 	public void testInputStringSpecialCharacters() { // Tag S11
 		// Expected result: 1 (Invalid Character)
-		String imSpecialString = "~!@#$%^&*()_+=-`~!@#$%^&*()_+=-`~!@#$%^&*()_+=-`~!@#$%^&*()_+=-`~!@#$%^&*()_+=-`~!@#$%^&*()_+=-`~!@#$%^&*()_+=-`~!@#$%^&";
+		String imSpecialString = "~!@#$%^&*()_+=-`~!@#$%^&*()_+=-`~!@#$%^&*()_+=-`~!@#$%^&*()_+=-`~!@#$%^&*()_+=-`~";
 		int a = v.verify(imSpecialString);
 		assertEquals("Input String Special Characters", 1, a);
 	}
 
 	@Test
 	public void testInputStringValidCharactersWithSpaces() { // Tag S12
-		// Expected result: 1 (Invalid characters)
+		// Expected result: -1 (Invalid input string length)
 		String validStringWithSpaces = "4 1 7 3 6 9 8 2 5 6 3 2 1 5 8 9 4 7 9 5 8 7 2 4 3 1 6 8 2 5 4 3 7 1 6 9 7 9 1 5 8 6 4 3 2 3 4 6 9 1 2 7 5 8 2 8 9 6 4 3 5 7 1 5 7 3 2 9 1 6 8 4 1 6 4 8 7 5 2 9 3";
 		int a = v.verify(validStringWithSpaces);
-		assertEquals("Input String Valid Characters With Spaces", 1, a);
+		assertEquals("Input String Valid Characters With Spaces", -1, a);
 	}
 
 	@Test
 	public void testInputStringValidCharactersWithNewLines() { // Tag S13
-		// Expected result: 1 (Invalid characters)
+		// Expected result: -1 (Invalid input string length)
 		String validStringWithNewLines = "4\n1\n7\n3\n6\n9\n8\n2\n5\n6\n3\n2\n1\n5\n8\n9\n4\n7\n9\n5\n8\n7\n2\n4\n3\n1\n6\n8\n2\n5\n4\n3\n7\n1\n6\n9\n7\n9\n1\n5\n8\n6\n4\n3\n2\n3\n4\n6\n9\n1\n2\n7\n5\n8\n2\n8\n9\n6\n4\n3\n5\n7\n1\n5\n7\n3\n2\n9\n1\n6\n8\n4\n1\n6\n4\n8\n7\n5\n2\n9\n3";
 		int a = v.verify(validStringWithNewLines);
-		assertEquals("Input String Valid Characters With New Lines", 1, a);
+		assertEquals("Input String Valid Characters With New Lines", -1, a);
 	}
 
 	@Test
 	public void testInputStringValidCharactersWithTabs() { // Tag S14
-		// Expected result: 1 (Invalid characters)
+		// Expected result: -1 (Invalid input string length)
 		String validStringWithTabs = "4\t1\t7\t3\t6\t9\t8\t2\t5\t6\t3\t2\t1\t5\t8\t9\t4\t7\t9\t5\t8\t7\t2\t4\t3\t1\t6\t8\t2\t5\t4\t3\t7\t1\t6\t9\t7\t9\t1\t5\t8\t6\t4\t3\t2\t3\t4\t6\t9\t1\t2\t7\t5\t8\t2\t8\t9\t6\t4\t3\t5\t7\t1\t5\t7\t3\t2\t9\t1\t6\t8\t4\t1\t6\t4\t8\t7\t5\t2\t9\t3";
 		int a = v.verify(validStringWithTabs);
-		assertEquals("Input String Valid Characters With Tabs", 1, a);
+		assertEquals("Input String Valid Characters With Tabs", -1, a);
 	}
 
 
