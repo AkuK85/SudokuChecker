@@ -100,7 +100,6 @@ The test suite was executed using Maven and JUnit, and the results were analyzed
 | `testInputStringLengthGreaterThan81`         | -1 (Invalid length)      | -1            | Pass      |
 | `testInputStringInvalidCharacters`         | 1 (Invalid character)    | 1             | Pass      |
 | `testInputStringEmptyString`               | -1 (Invalid length)      | -1            | Pass      |
-| `testInputStringNull`                    | -1 (Invalid length)      | -1            | Pass      |
 | `testInputStringAllSpaces`                 | 1 (Invalid character)    | 1             | Pass      |
 | `testInputStringVeryLongString`            | -1 (Invalid length)      | -1            | Pass      |
 | `testInputStringUnicodeCharacters`         | 1 (Invalid character)    | 1             | Pass      |
